@@ -1,0 +1,10 @@
+// Dev environment: local development against the dev backend.
+APP_ENVIRONMENT = dev
+APP_DISPLAY_NAME = Agentic Dev
+APP_BUNDLE_ID = com.agentic.app.dev
+API_BASE_URL = http:/$()/localhost:5080
+APS_ENVIRONMENT = development
+// Crash reporting (Sentry). Empty means off. Set SENTRY_DSN_IOS in .env.local or the environment (config/integrations.json);
+// `make generate` writes it into Secrets.xcconfig, which is never committed.
+SENTRY_DSN =
+#include? "Secrets.xcconfig"

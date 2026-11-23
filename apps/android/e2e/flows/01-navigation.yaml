@@ -1,0 +1,25 @@
+# End-to-end: sign in, home -> detail -> back, on the emulator with fixture data.
+appId: com.agentic.app.syst
+name: Sign in and navigate
+---
+- launchApp:
+    clearState: true
+    arguments:
+      uiTesting: true
+# A cold start on the CI emulator can take longer than the default wait.
+- extendedWaitUntil:
+    visible:
+      id: "signIn.submit"
+    timeout: 60000
+- tapOn:
+    id: "signIn.submit"
+- assertVisible:
+    id: "home.item.1"
+- tapOn:
+    id: "home.item.1"
+- assertVisible:
+    id: "detail.title"
+- tapOn:
+    id: "detail.backToHome"
+- assertVisible:
+    id: "home.item.1"

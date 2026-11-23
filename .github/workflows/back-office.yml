@@ -1,0 +1,110 @@
+name: Back office
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: back-office-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: apps/back-office
+
+env:
+  # Accessibility checks (ADR-0011) run unless the repository variable ACCESSIBILITY_CHECKS is "off".
+  ACCESSIBILITY_CHECKS: ${{ vars.ACCESSIBILITY_CHECKS || 'on' }}
+
+jobs:
+  changes:
+    name: Back office changes
+    runs-on: ubuntu-latest
+    outputs:
+      # Code (not Markdown) in the app, or this workflow. Docs-only changes never start a build.
+      run: ${{ steps.code.outputs.run == 'true' || steps.ci.outputs.run == 'true' }}
+      docs: ${{ steps.docs.outputs.run }}
+      backend: ${{ steps.backend.outputs.run }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v4
+        id: code
+        with:
+          predicate-quantifier: every
+          filters: |
+            run:
+              - 'apps/back-office/**'
+              - '!**/*.md'
+      - uses: dorny/paths-filter@v4
+        id: ci
+        with:
+          filters: |
+            run:
+              - '.github/workflows/back-office.yml'
+      - uses: dorny/paths-filter@v4
+        id: docs
+        with:
+          filters: |
+            run:
+              - 'apps/back-office/**/*.md'
+      - uses: dorny/paths-filter@v4
+        id: backend
+        with:
+          filters: |
+            run:
+              - 'backend/**'
+
+  checks:
+    needs: changes
+    if: needs.changes.outputs.run == 'true'
+    name: Back office lint, types and unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/back-office/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - name: Unit tests with coverage gate (70%)
+        run: npm run test:coverage
+      - uses: crate-ci/typos@v1
+        with:
+          files: apps/back-office/src
+
+  e2e:
+    name: Back office end-to-end tests
+    # Also runs for backend changes, because it tests against the real backend; the unit tests do not need to.
+    needs: [changes, checks]
+    if: >-
+      !cancelled() && (needs.checks.result == 'success' || needs.checks.result == 'skipped') &&
+      (needs.changes.outputs.run == 'true' || needs.changes.outputs.backend == 'true')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/back-office/package-lock.json
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: End-to-end against the backend (SYST)
+        run: npm run e2e
+        env:
+          CI: "true"
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: back-office-playwright-report
+          path: apps/back-office/playwright-report

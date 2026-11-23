@@ -1,0 +1,45 @@
+name: Design tokens
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  # Accessibility checks (ADR-0011) run unless the repository variable ACCESSIBILITY_CHECKS is "off".
+  ACCESSIBILITY_CHECKS: ${{ vars.ACCESSIBILITY_CHECKS || 'on' }}
+
+jobs:
+  changes:
+    name: Design tokens changes
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.filter.outputs.run }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            run:
+              - 'design/**'
+              - 'apps/*/src/styles/tokens.css'
+              - 'apps/website/tokens.css'
+              - 'apps/ios/AgenticApp/DesignSystem/DesignTokens.swift'
+              - 'apps/android/app/src/main/kotlin/com/agentic/app/designsystem/DesignTokens.kt'
+              - '.github/workflows/design.yml'
+
+  tokens:
+    needs: changes
+    if: needs.changes.outputs.run == 'true'
+    name: Design tokens in sync
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - run: node design/build.mjs --check

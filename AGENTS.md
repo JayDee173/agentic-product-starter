@@ -1,0 +1,66 @@
+# Agent guide
+
+Read this first, then the `AGENTS.md` in the component you are working on.
+
+## Context
+
+- Product context: `docs/product/`. Domain language: `GLOSSARY.md` (created when terms get settled).
+- Architecture: `docs/architecture/README.md` (arc42 + C4 diagrams). Decisions: `docs/adr/` (MADR 4, indexed in `docs/adr/README.md`).
+- Shared skills: `.agents/skills/` (see its README for which skill to use at each stage).
+- Platform skills: `<component>/.agents/skills/`.
+
+## The agentic SDLC
+
+1. **Shape** – `grill-me`, `wayfinder`, `research`, `prototype`
+2. **Refine** – `grill-with-docs`, `domain-modeling`, `architecture-decisions`
+3. **Specify** – `to-spec` (a GitHub issue)
+4. **Plan** – `to-tickets`, `triage`
+5. **Build** – read the architecture overview and ADRs (`architecture-decisions`), then `implement` / `implement-spec` + `tdd`, plus the component's platform skills
+6. **Review** – `code-review`, `pr` and the `architecture-decisions` checklist; all CI checks must be green
+7. **Fix and improve** – `diagnosing-bugs`, `improve-codebase-architecture`
+8. **Learn** – `retro`, `handoff`
+
+When a shared skill and a platform skill disagree on *how to build*, the platform skill wins. On *what to build*, the spec and ADRs win.
+
+## Components
+
+| Folder | What it is | Agent guide |
+|---|---|---|
+| `apps/ios` | Native iOS app (SwiftUI) | `apps/ios/AGENTS.md` |
+| `apps/android` | Native Android app (Jetpack Compose) | `apps/android/AGENTS.md` |
+| `apps/web-app` | Customer web app (React) | `apps/web-app/AGENTS.md` |
+| `apps/back-office` | Admin and support tool (React) | `apps/back-office/AGENTS.md` |
+| `apps/website` | One-page landing website | `apps/website/AGENTS.md` |
+| `backend` | .NET API for every app | `backend/AGENTS.md` |
+| `design` | Design tokens for every app | `design/README.md` |
+
+## Shared rules
+
+- One branch per ticket. Conventional commits (`feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`).
+- Every feature works end to end before it ships: unit, UI and end-to-end tests.
+- Unfinished work is merged behind a feature flag that defaults to off.
+- Environments: Dev, SYST, Prod. Never point local work at Prod.
+- Architecture first: before coding, read `docs/architecture/README.md` and the accepted ADRs in the area. Never silently work around an ADR; a change that alters a decision adds a new ADR (superseding the old one) and updates the overview and diagrams in the same pull request.
+- Product name: never hard-code it in a new place without teaching `scripts/rename.mjs` (the **Rename check** fails otherwise). Use the `rename-product` skill to rename.
+- Colours, spacing and type come only from `design/tokens.json`. Change it there and run `node design/build.mjs`.
+- One flow across apps: a change to accounts, profile or feature flags updates the backend and every app that uses it in the same pull request.
+- Never commit secrets, keys or customer data. This repository is public. Secret push protection blocks known key formats.
+- Third-party services: every key or ID is optional and listed in `config/integrations.json` and `.env.example`. Apps read them from environment variables or `.env.local`, never from code. Add a new one there first (the **Setup check** fails otherwise); use the `setup-integrations` skill.
+- Accessibility: every screen meets WCAG 2.2 AA (`accessibility` skill). New screens are added to the accessibility tests on their platform; never weaken the contrast check or skip an audit to make CI green.
+- Observability: new user-facing behaviour gets a metric and a dashboard panel (`observability` skill). No personal data in logs, traces or metric tags.
+- Incidents: when customers are affected in production, open an issue from the **Incident** template and close it when service is restored; it feeds the DORA metrics (`dora-metrics` skill).
+- Dependencies: new ones must pass **Dependency review**; fix vulnerabilities with the `security-audit` skill and update with the `update-dependencies` skill. Stable versions only.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs live in this repo's GitHub Issues (`gh` CLI). See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default labels: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root. ADRs use MADR 4 (`docs/adr/template.md`) and the architecture overview is `docs/architecture/README.md`. See `docs/agents/domain.md` and the `architecture-decisions` skill.

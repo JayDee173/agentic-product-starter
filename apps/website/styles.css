@@ -1,0 +1,320 @@
+/* Built only from design tokens (tokens.css is generated from design/tokens.json). */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  background: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--color-primary);
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-m);
+  padding: var(--space-m) var(--space-l);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.nav nav {
+  display: flex;
+  gap: var(--space-l);
+}
+
+.nav nav a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+}
+
+.brand {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 var(--space-l);
+}
+
+.hero {
+  padding: var(--space-xxl) 0;
+}
+
+.eyebrow {
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  margin: 0 0 var(--space-m);
+}
+
+h1 {
+  font-size: var(--font-size-xxl);
+  line-height: 1.15;
+  margin: 0 0 var(--space-l);
+  max-width: 18ch;
+}
+
+h2 {
+  font-size: var(--font-size-xl);
+  margin: 0 0 var(--space-l);
+}
+
+h3 {
+  font-size: var(--font-size-lg);
+  margin: 0 0 var(--space-s);
+}
+
+.lead {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  max-width: 60ch;
+  margin: 0 0 var(--space-xl);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-m);
+  flex-wrap: wrap;
+}
+
+.button {
+  display: inline-block;
+  padding: var(--space-s) var(--space-l);
+  border-radius: var(--radius-pill);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+
+.button--primary {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.button--primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.button--secondary {
+  color: var(--color-primary);
+  border-color: var(--color-border);
+}
+
+.section {
+  padding: var(--space-xxl) 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-m);
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-l);
+  padding: var(--space-l);
+}
+
+.card p {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.steps,
+.checks {
+  margin: 0;
+  padding-left: var(--space-l);
+  display: grid;
+  gap: var(--space-s);
+}
+
+.footer {
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-l);
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.footer p {
+  margin: 0 0 var(--space-m);
+}
+
+.footer__tagline {
+  color: var(--color-text-primary);
+}
+
+.footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-s) var(--space-l);
+  margin: 0 0 var(--space-m);
+}
+
+.footer__links a {
+  color: var(--color-text-secondary);
+}
+
+.footer__quote {
+  color: var(--color-text-primary);
+}
+
+.overview {
+  margin: 0 0 var(--space-xl);
+}
+
+.overview img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-l);
+}
+
+.made-by {
+  color: var(--color-text-secondary);
+  max-width: 60ch;
+  margin: var(--space-l) 0 0;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 1px solid var(--color-control-border);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  color: var(--color-text-primary);
+}
+
+/* DORA dashboard (dora/index.html) */
+.hero--compact {
+  padding: var(--space-xl) 0 var(--space-m);
+}
+
+.muted {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.metrics {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.card .metric__value {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin: 0 0 var(--space-s);
+  color: var(--color-text-primary);
+}
+
+.level {
+  display: inline-block;
+  padding: var(--space-xs) var(--space-s);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.level--elite,
+.level--high {
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.level--medium {
+  color: var(--color-warning);
+  border-color: var(--color-warning);
+}
+
+.level--low {
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+/* Security dashboard (security/index.html) */
+.sev--critical,
+.sev--high {
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.sev--medium {
+  color: var(--color-warning);
+  border-color: var(--color-warning);
+}
+
+.sev {
+  text-transform: capitalize;
+}
+
+.sev--clear {
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.table-wrap th,
+.table-wrap td {
+  text-align: left;
+  padding: var(--space-s) var(--space-m);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table-wrap thead th {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.sparkline {
+  display: block;
+  width: 100%;
+  height: 32px;
+  margin-top: var(--space-s);
+}
+
+.sparkline polyline {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}

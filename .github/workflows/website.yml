@@ -1,0 +1,68 @@
+name: Website
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: apps/website
+
+env:
+  # Accessibility checks (ADR-0011) run unless the repository variable ACCESSIBILITY_CHECKS is "off".
+  ACCESSIBILITY_CHECKS: ${{ vars.ACCESSIBILITY_CHECKS || 'on' }}
+
+jobs:
+  changes:
+    name: Website changes
+    runs-on: ubuntu-latest
+    outputs:
+      # Code (not Markdown) in the app, or this workflow. Docs-only changes never start a build.
+      run: ${{ steps.code.outputs.run == 'true' || steps.ci.outputs.run == 'true' }}
+      docs: ${{ steps.docs.outputs.run }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v4
+        id: code
+        with:
+          predicate-quantifier: every
+          filters: |
+            run:
+              - 'apps/website/**'
+              - '!**/*.md'
+      - uses: dorny/paths-filter@v4
+        id: ci
+        with:
+          filters: |
+            run:
+              - '.github/workflows/website.yml'
+      - uses: dorny/paths-filter@v4
+        id: docs
+        with:
+          filters: |
+            run:
+              - 'apps/website/**/*.md'
+
+  checks:
+    needs: changes
+    if: needs.changes.outputs.run == 'true'
+    name: Website validation and smoke tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/website/package-lock.json
+      - run: npm ci
+      - run: npm run validate
+      - uses: crate-ci/typos@v1
+        with:
+          files: apps/website/index.html apps/website/dora apps/website/security
+      - run: npx playwright install --with-deps chromium
+      - run: npm run e2e
