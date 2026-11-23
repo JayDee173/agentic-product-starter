@@ -1,0 +1,39 @@
+{
+  "repository": "JayDee173/agentic-product-starter",
+  "generatedAt": "2026-11-23T16:30:21.579Z",
+  "windowDays": 30,
+  "deploymentSource": "pull requests merged into main",
+  "metrics": {
+    "deploymentFrequency": {
+      "total": 0,
+      "perWeek": 0,
+      "level": "low"
+    },
+    "leadTime": {
+      "medianHours": null,
+      "changes": 0,
+      "level": null
+    },
+    "changeFailureRate": {
+      "percent": null,
+      "failures": 0,
+      "deployments": 0,
+      "level": null
+    },
+    "timeToRestore": {
+      "medianHours": null,
+      "incidents": 0,
+      "open": 0,
+      "level": null
+    }
+  },
+  "history": [
+    {
+      "date": "2026-11-23",
+      "deploymentsPerWeek": 0,
+      "leadTimeHours": null,
+      "changeFailurePercent": null,
+      "timeToRestoreHours": null
+    }
+  ]
+}
